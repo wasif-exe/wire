@@ -26,7 +26,7 @@ To evaluate the efficiency of the zero-copy, zero-syscall design, a dedicated hi
 3. **Simulation Engine Processing Rate:** Measures ticks per second processed inside our chaos framework under clean, 1% lossy, and extreme lossy/duplicative conditions.
 
 <p align="center">
-  <img src="wire_benchmark.png" alt="Wire TCP/IP Stack Benchmark Results" width="100%">
+  <img src="wire_benchmark.png" alt="Wire TCP/IP Stack Benchmark Results" width="80%">
 </p>
 
 ### Performance Highlights
