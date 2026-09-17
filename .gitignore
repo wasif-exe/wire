@@ -1,0 +1,22 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Test and capture artifacts
+*.bin
+*.pcap
+*.pcapng
+*.log
+*.txt
+
+# IDE / Editor metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS artifacts
+.DS_Store
+Thumbs.db

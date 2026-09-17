@@ -1,0 +1,23 @@
+[workspace]
+resolver = "2"
+members = [
+    "wire-core",
+    "wire-tap",
+    "wire-sim",
+    "wire-echo"
+]
+
+[workspace.dependencies]
+libc = "0.2"
+bitflags = "2.6"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+bytes = "1.7"
+smallvec = "1.13"
+thiserror = "1.0"
+anyhow = "1.0"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"

@@ -1,0 +1,11 @@
+[package]
+name = "wire-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bitflags.workspace = true
+bytes.workspace = true
+smallvec.workspace = true
+thiserror.workspace = true
+tracing.workspace = true

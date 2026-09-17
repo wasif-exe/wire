@@ -1,0 +1,19 @@
+[package]
+name = "wire-echo"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "wire-echo"
+path = "src/main.rs"
+
+[[bin]]
+name = "wire-httpget"
+path = "src/bin/httpget.rs"
+
+[dependencies]
+wire-core = { path = "../wire-core" }
+wire-tap = { path = "../wire-tap" }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+anyhow.workspace = true

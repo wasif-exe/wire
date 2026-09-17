@@ -1,0 +1,13 @@
+[package]
+name = "wire-tap"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "tap-probe"
+path = "src/bin/probe.rs"
+
+[dependencies]
+wire-core = { path = "../wire-core" }
+libc.workspace = true
+anyhow.workspace = true
