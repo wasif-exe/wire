@@ -55,7 +55,11 @@ To evaluate the efficiency of the zero-copy, zero-syscall design, a dedicated hi
               +--------+-----------------+--------+
                        |                 |
          Frame In / Out|                 |Frame In / Out
-+----------------------v---+   +---------v--------------------+
++----------------------v---+   +---------v--------------------+## License
+
+MIT 
+
+
 |         wire-tap         |   |           wire-sim           |
 | Linux /dev/net/tun Driver|   |   Deterministic In-Memory    |
 | (IFF_TAP | IFF_NO_PI)    |   | Chaos Wire (Loss, Dup, Jitt) |
@@ -219,11 +223,5 @@ Hello from your real Host over userspace TCP!
 * **Dynamic ARP Bootstrapping:** In active open mode, the stack detects unresolved MAC destinations, broadcasts an ARP request, drops the initial frame, and allows the RTO timer to retransmit the SYN once the ARP reply populates the L2 cache.
 * **Checksum Zeroing:** TCP segment retransmissions explicitly zero out the checksum offset before calculating the pseudo-header checksum, avoiding mathematical sum corruption on retried packets.
 
----
 
-## License
-
-MIT / Apache 2.0
-
-```
 
