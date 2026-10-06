@@ -1,6 +1,9 @@
 [workspace]
 resolver = "2"
 members = [
+    "wire-pacer",
+    "wire-store",
+    "wire-simd",
     "wire-core",
     "wire-tap",
     "wire-sim",

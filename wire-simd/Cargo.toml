@@ -1,14 +1,18 @@
 [package]
-name = "wire-xdp"
+name = "wire-simd"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 wire-core = { path = "../wire-core" }
-wire-simd = { path = "../wire-simd" }
-libc = "0.2"
-anyhow = "1.0"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "parse"
+harness = false
 
 [features]
 default = []
-profile = ["wire-core/profile"]
+force_scalar = []

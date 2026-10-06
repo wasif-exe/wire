@@ -3,40 +3,15 @@ name = "wire-echo"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "wire-echo"
-path = "src/main.rs"
-
-[[bin]]
-name = "wire-httpget"
-path = "src/bin/httpget.rs"
-
-[[bin]]
-name = "wire-perf"
-path = "src/bin/perf.rs"
-
-[[bin]]
-name = "wire-curl"
-path = "src/bin/curl.rs"
-
-[[bin]]
-name = "wire-xdp-echo"
-path = "src/bin/xdp_echo.rs"
-
-[[bin]]
-name = "wire-redis"
-path = "src/bin/redis.rs"
-
 [dependencies]
 wire-core = { path = "../wire-core" }
-wire-tap = { path = "../wire-tap" }
 wire-xdp = { path = "../wire-xdp" }
+wire-simd = { path = "../wire-simd" }
+wire-store = { path = "../wire-store" }
+wire-pacer = { path = "../wire-pacer" }
 wire-sim = { path = "../wire-sim" }
-tracing.workspace = true
-tracing-subscriber.workspace = true
-anyhow.workspace = true
-libc.workspace = true
-rustls.workspace = true
+anyhow = "1.0"
+libc = "0.2"
 
 [features]
 default = []

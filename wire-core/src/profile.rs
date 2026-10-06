@@ -18,9 +18,11 @@ pub mod probes {
         TxEnqueue = 9,
         TxCompleteReap = 10,
         TotalPacket = 11,
+        SimdParse = 12,
+        SimdParseBatch = 13,
     }
 
-    pub const NUM_STAGES: usize = 12;
+    pub const NUM_STAGES: usize = 14;
 
     pub const STAGE_NAMES: [&str; NUM_STAGES] = [
         "RX_RING_ACQUIRE",
@@ -35,6 +37,8 @@ pub mod probes {
         "TX_ENQUEUE",
         "TX_COMPLETE_REAP",
         "TOTAL_PACKET",
+        "SIMD_PARSE",
+        "SIMD_PARSE_BATCH",
     ];
 
     #[derive(Clone, Copy, Default, Debug)]
@@ -130,9 +134,11 @@ pub mod probes {
         TxEnqueue = 9,
         TxCompleteReap = 10,
         TotalPacket = 11,
+        SimdParse = 12,
+        SimdParseBatch = 13,
     }
 
-    pub const NUM_STAGES: usize = 12;
+    pub const NUM_STAGES: usize = 14;
 
     pub const STAGE_NAMES: [&str; NUM_STAGES] = [
         "RX_RING_ACQUIRE",
@@ -147,6 +153,8 @@ pub mod probes {
         "TX_ENQUEUE",
         "TX_COMPLETE_REAP",
         "TOTAL_PACKET",
+        "SIMD_PARSE",
+        "SIMD_PARSE_BATCH",
     ];
 
     #[derive(Clone, Copy, Default, Debug)]
