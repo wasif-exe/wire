@@ -1,0 +1,12 @@
+[package]
+name = "wire-runtime"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wire-core = { path = "../wire-core" }
+wire-xdp = { path = "../wire-xdp" }
+wire-store = { path = "../wire-store" }
+io-uring = { workspace = true }
+libc = { workspace = true }
+anyhow = { workspace = true }

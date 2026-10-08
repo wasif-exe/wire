@@ -1,12 +1,16 @@
+pub mod hints;
+
 use std::ptr;
 use std::sync::atomic::{fence, Ordering};
 use wire_core::probes::{self, StageId};
 use wire_simd::ParsedL4;
+pub use hints::{NicRxMetadata, read_nic_hints_from_headroom};
 
 pub const NUM_FRAMES: usize = 4096;
 pub const RX_FRAMES: usize = 2048;
 pub const TX_FRAMES: usize = 2048;
 pub const FRAME_SIZE: usize = 2048;
+pub const FRAME_HEADROOM: usize = 256;
 pub const UMEM_SIZE: usize = NUM_FRAMES * FRAME_SIZE;
 pub const BATCH_SIZE: usize = 64;
 
@@ -445,7 +449,7 @@ impl SpscRecycleRing {
             mask: (TX_FRAMES - 1) as u32,
         };
         for i in 0..TX_FRAMES {
-            ring.buffer[i] = ((RX_FRAMES + i) * FRAME_SIZE) as u64;
+            ring.buffer[i] = ((RX_FRAMES + i) * FRAME_SIZE + FRAME_HEADROOM) as u64;
         }
         ring.tail = TX_FRAMES as u32;
         ring
@@ -523,7 +527,7 @@ impl XdpSocket {
                 addr: umem_area as u64,
                 len: UMEM_SIZE as u64,
                 chunk_size: FRAME_SIZE as u32,
-                headroom: 0,
+                headroom: FRAME_HEADROOM as u32,
                 flags: 0,
             };
 
@@ -607,7 +611,7 @@ impl XdpSocket {
         let raw_ring = self.fill_ring.descs as *mut u64;
 
         for i in 0..RX_FRAMES {
-            let addr = (i * FRAME_SIZE) as u64;
+            let addr = (i * FRAME_SIZE + FRAME_HEADROOM) as u64;
             // SAFETY: Volatile write of recycled frame address back to fill ring.
             unsafe {
                 ptr::write_volatile(raw_ring.add(((prod + i as u32) & ring_mask) as usize), addr);
@@ -619,9 +623,9 @@ impl XdpSocket {
     }
 
     #[inline(always)]
-    pub fn poll_read_zerocopy<F>(&mut self, max_batch: usize, mut on_packet: F) -> usize
+    pub fn poll_read_zerocopy_hints<F>(&mut self, max_batch: usize, mut on_packet: F) -> usize
     where
-        F: FnMut(&[u8], &ParsedL4),
+        F: FnMut(&[u8], &ParsedL4, &NicRxMetadata),
     {
         let rx_prod = self.rx_ring.producer_index();
         let available = rx_prod.wrapping_sub(self.rx_cons) as usize;
@@ -640,19 +644,20 @@ impl XdpSocket {
             let desc = unsafe { ptr::read_volatile(rx_descs.add(rx_idx as usize)) };
             let len = desc.len as usize;
 
-            // SAFETY: Deriving continuous raw slice representation directly from mapped UMEM packet.
-            let packet_slice = unsafe {
+            // SAFETY: Accessing packet payload pointer and preceding metadata headroom.
+            let (packet_slice, hints) = unsafe {
                 let ptr = self.umem_area.add(desc.addr as usize);
-                std::slice::from_raw_parts(ptr, len)
+                let hints = read_nic_hints_from_headroom(ptr, FRAME_HEADROOM);
+                (std::slice::from_raw_parts(ptr, len), hints)
             };
 
             let parsed = wire_simd::parse_one(packet_slice);
-            on_packet(packet_slice, &parsed);
+            on_packet(packet_slice, &parsed, &hints);
 
             let fill_idx = (self.fill_prod + i as u32) & self.fill_ring.mask;
-            // SAFETY: Bypassing heap allocations and returning the completed frame pointer to the fill ring.
+            // SAFETY: Returning recycled frame address back to fill ring descriptor table.
             unsafe {
-                ptr::write_volatile(fill_descs.add(fill_idx as usize), desc.addr & !(FRAME_SIZE as u64 - 1));
+                ptr::write_volatile(fill_descs.add(fill_idx as usize), desc.addr);
             }
         }
 
@@ -664,6 +669,16 @@ impl XdpSocket {
         self.fill_ring.set_producer_index(self.fill_prod);
 
         batch_count
+    }
+
+    #[inline(always)]
+    pub fn poll_read_zerocopy<F>(&mut self, max_batch: usize, mut on_packet: F) -> usize
+    where
+        F: FnMut(&[u8], &ParsedL4),
+    {
+        self.poll_read_zerocopy_hints(max_batch, |pkt, parsed, _hints| {
+            on_packet(pkt, parsed);
+        })
     }
 
     #[inline(always)]
@@ -697,7 +712,7 @@ impl XdpSocket {
             let fill_idx = (self.fill_prod + i as u32) & self.fill_ring.mask;
             // SAFETY: Transferring ownership back to fill ring slot.
             unsafe {
-                ptr::write_volatile(fill_descs.add(fill_idx as usize), desc.addr & !(FRAME_SIZE as u64 - 1));
+                ptr::write_volatile(fill_descs.add(fill_idx as usize), desc.addr);
             }
         }
 

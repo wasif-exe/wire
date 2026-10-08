@@ -1,0 +1,12 @@
+[package]
+name = "wire-quic"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wire-core = { path = "../wire-core" }
+bytes = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+ring = { workspace = true }

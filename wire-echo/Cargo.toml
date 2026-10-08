@@ -10,8 +10,13 @@ wire-simd = { path = "../wire-simd" }
 wire-store = { path = "../wire-store" }
 wire-pacer = { path = "../wire-pacer" }
 wire-sim = { path = "../wire-sim" }
+wire-tap = { path = "../wire-tap" }
+wire-quic = { path = "../wire-quic" }
+wire-runtime = { path = "../wire-runtime" }
 anyhow = "1.0"
 libc = "0.2"
+rustls = { workspace = true, features = ["ring", "std"] }
+tracing-subscriber = { workspace = true }
 
 [features]
 default = []

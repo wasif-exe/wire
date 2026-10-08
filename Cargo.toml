@@ -9,7 +9,9 @@ members = [
     "wire-sim",
     "wire-echo",
     "wire-xdp",
-    "wire-uring"
+    "wire-uring",
+    "wire-quic",
+    "wire-runtime"
 ]
 
 [workspace.dependencies]

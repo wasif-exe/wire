@@ -1,6 +1,7 @@
 pub mod masks;
 pub mod scalar;
 pub mod avx2;
+pub mod avx512;
 pub mod batch;
 
 use wire_core::types::PackedTuple;
@@ -46,6 +47,12 @@ pub fn parse_one(frame: &[u8]) -> ParsedL4 {
     let t_begin = probes::stage_begin(StageId::SimdParse);
     #[cfg(target_arch = "x86_64")]
     {
+        if is_x86_feature_detected!("avx512f") && !cfg!(feature = "force_scalar") {
+            // SAFETY: Safe because is_x86_feature_detected!("avx512f") asserts hardware capability.
+            let res = unsafe { avx512::parse_one_avx512(frame) };
+            probes::stage_end(StageId::SimdParse, t_begin);
+            return res;
+        }
         if is_x86_feature_detected!("avx2") && !cfg!(feature = "force_scalar") {
             // SAFETY: Safe because is_x86_feature_detected!("avx2") asserts hardware capability.
             let res = unsafe { avx2::parse_one_avx2(frame) };

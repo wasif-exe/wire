@@ -7,3 +7,4 @@ edition = "2021"
 wire-core = { path = "../wire-core" }
 libc = "0.2"
 anyhow = "1.0"
+io-uring = "0.6"
