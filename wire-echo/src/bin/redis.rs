@@ -16,7 +16,7 @@ fn main() -> anyhow::Result<()> {
     let mut rx_buffers: HashMap<SocketTuple, Vec<u8>> = HashMap::new();
     let mut buf = [0u8; 2048];
     let mut last_tick = Instant::now();
-    println!("⚡ Wire-Redis Server listening on 192.168.99.2:6379 (Zero-Syscall Dataplane)");
+    println!(" Wire-Redis Server listening on 192.168.99.2:6379 (Zero-Syscall Dataplane)");
     loop {
         let now = Instant::now();
         if now.duration_since(last_tick) >= Duration::from_millis(10) {

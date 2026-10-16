@@ -45,7 +45,7 @@ fn main() -> anyhow::Result<()> {
             std::io::Error::last_os_error()
         ));
     }
-    println!("⚡ tap0 opened. Our MAC: {:02x?}, Our IP: {}.{}.{}.{}",
+    println!(" tap0 opened. Our MAC: {:02x?}, Our IP: {}.{}.{}.{}",
         OUR_MAC, OUR_IP[0], OUR_IP[1], OUR_IP[2], OUR_IP[3]);
     println!("Waiting for packets. Run: ping 192.168.99.2\n");
     let mut buf = [0u8; 2048];
@@ -72,7 +72,7 @@ fn handle_arp(frame: &[u8], file: &mut std::fs::File) {
     }
     let sender_mac = &frame[22..28];
     let sender_ip  = &frame[28..32];
-    println!("📥 ARP request: who has {}.{}.{}.{}? (from {:02x?})",
+    println!(" ARP request: who has {}.{}.{}.{}? (from {:02x?})",
         target_ip[0], target_ip[1], target_ip[2], target_ip[3], sender_mac);
     let mut reply = [0u8; 42];
     reply[0..6].copy_from_slice(sender_mac);   
@@ -88,7 +88,7 @@ fn handle_arp(frame: &[u8], file: &mut std::fs::File) {
     reply[32..38].copy_from_slice(sender_mac); 
     reply[38..42].copy_from_slice(sender_ip);  
     file.write_all(&reply).unwrap();
-    println!("📤 ARP reply sent\n");
+    println!(" ARP reply sent\n");
 }
 fn handle_ipv4(frame: &[u8], file: &mut std::fs::File) {
     if frame.len() < 34 { return; } 
@@ -100,7 +100,7 @@ fn handle_ipv4(frame: &[u8], file: &mut std::fs::File) {
     if dst_ip != OUR_IP { return; }
     let ip_hdr = &frame[14..14 + ihl];
     if internet_checksum(ip_hdr) != 0 {
-        println!("⚠️  Bad IP checksum, dropping");
+        println!("  Bad IP checksum, dropping");
         return;
     }
     if protocol == 1 {
@@ -136,7 +136,7 @@ fn handle_ipv4(frame: &[u8], file: &mut std::fs::File) {
             reply[36..38].copy_from_slice(&icmp_cksum.to_be_bytes());
             file.write_all(&reply).unwrap();
             let seq = u16::from_be_bytes([frame[icmp_start + 6], frame[icmp_start + 7]]);
-            println!("📤 ICMP echo reply sent (seq={}, {} bytes)", seq, icmp_len);
+            println!(" ICMP echo reply sent (seq={}, {} bytes)", seq, icmp_len);
         }
     }
 }

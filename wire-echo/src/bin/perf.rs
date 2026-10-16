@@ -341,7 +341,7 @@ fn print_profile_report(tsc_ghz: f64, args: &[String]) {
             }
             let json = format!(r#"{{"tsc_ghz":{:.3},"stages":[{}]}}"#, tsc_ghz, json_stages.join(","));
             let _ = std::fs::write(filename, json);
-            println!("\n  📄 Profile JSON exported to: \x1b[1;34m{}\x1b[0m", filename);
+            println!("\n   Profile JSON exported to: \x1b[1;34m{}\x1b[0m", filename);
         }
     }
 }

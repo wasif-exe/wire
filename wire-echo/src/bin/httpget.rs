@@ -12,7 +12,7 @@ fn main() -> anyhow::Result<()> {
     let mut stack = Stack::new(local_mac, local_ip, gateway_ip);
     let mut buf = [0u8; 2048];
     let mut last_tick = Instant::now();
-    println!("⚡ Starting Active Connection to 192.168.99.1:8000");
+    println!(" Starting Active Connection to 192.168.99.1:8000");
     let now = Instant::now();
     let tuple = stack.tcp_connect(remote_ip, remote_port, local_port, now);
     let mut request_sent = false;
@@ -30,7 +30,7 @@ fn main() -> anyhow::Result<()> {
         }
         if let Some(state) = stack.connection_state(tuple) {
             if state == TcpState::Established && !request_sent {
-                println!("✅ Connection established! Sending HTTP GET...");
+                println!(" Connection established! Sending HTTP GET...");
                 let http_req = b"GET /index.html HTTP/1.1\r\nHost: 192.168.99.1\r\nConnection: close\r\n\r\n";
                 stack.tcp_send(tuple, http_req);
                 stack.flush(now);
@@ -41,11 +41,11 @@ fn main() -> anyhow::Result<()> {
                 response_buffer.extend(&data);
             }
             if state == TcpState::CloseWait {
-                println!("📥 Server closed connection (FIN received). Closing our side.");
+                println!(" Server closed connection (FIN received). Closing our side.");
                 stack.tcp_close(tuple, now);
             }
         } else if request_sent {
-            println!("🛑 Connection closed cleanly by stack.");
+            println!(" Connection closed cleanly by stack.");
             break;
         }
         while let Some(mut tx_packet) = stack.tx_queue.pop_front() {

@@ -166,13 +166,13 @@ fn print_dashboard_row(
     let status_plain = if status { "[PASS]" } else { "[FAIL]" };
     let status_colored = if status { "\x1b[1;32m[PASS]\x1b[0m" } else { "\x1b[1;31m[FAIL]\x1b[0m" };
     let status_padded = format!("{:^8}", status_plain).replace(status_plain, status_colored);
-    println!("│ {} │ {} │ {} │ {} │ {} │", c0, c1, c2, c3, status_padded);
+    println!(" {}  {}  {}  {}  {} ", c0, c1, c2, c3, status_padded);
 }
 fn main() {
     let banner_width = 111;
-    println!("\x1b[1;36m{}\x1b[0m", "═".repeat(banner_width));
+    println!("\x1b[1;36m{}\x1b[0m", "".repeat(banner_width));
     println!("\x1b[1;37m{:^111}\x1b[0m", "WIRE v8 — COMMERCIAL HFT DATAPLANE HONEST BENCHMARK");
-    println!("\x1b[1;36m{}\x1b[0m", "═".repeat(banner_width));
+    println!("\x1b[1;36m{}\x1b[0m", "".repeat(banner_width));
     println!(
         "\x1b[1;33m[+] Heavy Subsystems Active: VFIO PCI DMA | Onload Intercept | SBE MCAST | SIMD SOR | PTP Servo\x1b[0m\n"
     );
@@ -187,12 +187,12 @@ fn main() {
     let h2 = format!("{:>20}", "MEASURED RATE");
     let h3 = format!("{:>22}", "LATENCY / CYCLES");
     let h4 = format!("{:^8}", "STATUS");
-    println!("┌{}┬{}┬{}┬{}┬{}┐", "─".repeat(42), "─".repeat(17), "─".repeat(22), "─".repeat(24), "─".repeat(10));
+    println!("{}{}{}{}{}", "".repeat(42), "".repeat(17), "".repeat(22), "".repeat(24), "".repeat(10));
     println!(
-        "│ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │",
+        " \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m ",
         h0, h1, h2, h3, h4
     );
-    println!("├{}┼{}┼{}┼{}┼{}┤", "─".repeat(42), "─".repeat(17), "─".repeat(22), "─".repeat(24), "─".repeat(10));
+    println!("{}{}{}{}{}", "".repeat(42), "".repeat(17), "".repeat(22), "".repeat(24), "".repeat(10));
     print_dashboard_row(
         "CME MDP 3.0 SBE Decoder (wire-mcast)",
         "MICRO",
@@ -235,12 +235,12 @@ fn main() {
         &format!("{:.2} cycles/sample", servo_c),
         servo_pass,
     );
-    println!("└{}┴{}┴{}┴{}┴{}┘", "─".repeat(42), "─".repeat(17), "─".repeat(22), "─".repeat(24), "─".repeat(10));
+    println!("{}{}{}{}{}", "".repeat(42), "".repeat(17), "".repeat(22), "".repeat(24), "".repeat(10));
     let all_pass = sbe_pass && arb_pass && vfio_pass && onload_pass && sor_pass && servo_pass;
     if all_pass {
         println!("\n\x1b[1;32m[PASS] All Wire v8 commercial HFT dataplane performance targets met and verified.\x1b[0m");
     } else {
         println!("\n\x1b[1;31m[FAIL] One or more performance targets failed threshold.\x1b[0m");
     }
-    println!("\x1b[1;36m{}\x1b[0m", "═".repeat(banner_width));
+    println!("\x1b[1;36m{}\x1b[0m", "".repeat(banner_width));
 }

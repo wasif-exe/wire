@@ -12,4 +12,4 @@ sudo ip link set "$WIRE_IFACE" up
 sudo sysctl -w "net.ipv6.conf.$HOST_IFACE.disable_ipv6=1" > /dev/null
 sudo sysctl -w "net.ipv4.conf.$HOST_IFACE.rp_filter=0" > /dev/null
 clang -O2 -g -target bpf -c wire-xdp/bpf/xdp_prog.c -o wire-xdp/bpf/xdp_prog.o
-echo "✅ Interface veth-wire and BPF object ready."
+echo " Interface veth-wire and BPF object ready."

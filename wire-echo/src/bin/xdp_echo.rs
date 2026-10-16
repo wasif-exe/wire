@@ -25,16 +25,16 @@ fn main() -> anyhow::Result<()> {
     let cores = vec![0, 1];
     let num_shards = cores.len();
     let mut handles = Vec::new();
-    println!("⚡ Initializing Sharded Dataplane (Poll Mode: {:?}) across cores: {:?}", poll_mode, cores);
+    println!(" Initializing Sharded Dataplane (Poll Mode: {:?}) across cores: {:?}", poll_mode, cores);
     for (queue_id, &core_id) in cores.iter().enumerate() {
         let bpf = Arc::clone(&bpf);
         let handle = thread::spawn(move || -> anyhow::Result<()> {
             pin_thread_to_core(core_id)?;
-            println!("🔒 Worker thread pinned to CPU core {}", core_id);
+            println!(" Worker thread pinned to CPU core {}", core_id);
             let mut xsk = XdpSocket::new("veth-wire", queue_id as u32)?;
             bpf.update_xsk_map(queue_id as u32, xsk.fd())?;
             if xsk.is_hugepage() {
-                println!("🚀 Core {} running on 2MB HugePages", core_id);
+                println!(" Core {} running on 2MB HugePages", core_id);
             }
             let local_mac = MacAddress([0x02, 0x00, 0x00, 0x00, 0x00, 0x01]);
             let local_ip = Ipv4Address([192, 168, 99, 2]);

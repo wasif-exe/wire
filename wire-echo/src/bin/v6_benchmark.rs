@@ -246,7 +246,7 @@ fn print_row(col0: &str, c0_color: &str, col1: &str, c1_color: &str, col2: &str,
     let c1_padded = format!("{:^21}", col1);
     let c2_padded = format!("{:<26}", col2);
     println!(
-        "│ {}{}\x1b[0m │ {}{}\x1b[0m │ {}{}\x1b[0m │",
+        " {}{}\x1b[0m  {}{}\x1b[0m  {}{}\x1b[0m ",
         c0_color, c0_padded,
         c1_color, c1_padded,
         c2_color, c2_padded
@@ -254,18 +254,18 @@ fn print_row(col0: &str, c0_color: &str, col1: &str, c1_color: &str, col2: &str,
 }
 fn main() {
     let banner_width = 97;
-    println!("\x1b[1;36m{}\x1b[0m", "═".repeat(banner_width));
+    println!("\x1b[1;36m{}\x1b[0m", "".repeat(banner_width));
     println!("\x1b[1;37m{:^97}\x1b[0m", "WIRE v6 — ASYNCHRONOUS SMART-NODE INFRASTRUCTURE APPLIANCE BENCHMARK");
-    println!("\x1b[1;36m{}\x1b[0m", "═".repeat(banner_width));
+    println!("\x1b[1;36m{}\x1b[0m", "".repeat(banner_width));
     println!("\n\x1b[1;33m[+] Executing Tier-1 Hardware Benchmarks across all subsystems...\x1b[0m\n");
     let (scalar_c, avx2_c, avx512_ipv4_c, avx512_ipv6_c) = benchmark_simd_parsers();
     let (quic_mpps, qpack_enc, qpack_dec) = benchmark_quic_engine();
     let (sync_wal_mops, async_wal_mops, async_wal_bw, wal_overhead_ns) = benchmark_wal_engines();
     let (txc_mops, txc_latency_ns) = benchmark_runtime_executor();
     let (sw_csum_c, hw_offload_c) = benchmark_nic_offload();
-    println!("\x1b[1;32m┌{}┬{}┬{}┐\x1b[0m", "─".repeat(42), "─".repeat(23), "─".repeat(28));
+    println!("\x1b[1;32m{}{}{}\x1b[0m", "".repeat(42), "".repeat(23), "".repeat(28));
     print_row("SUBSYSTEM / BENCHMARK MODULE", "\x1b[1;36m", "MEASURED RATE", "\x1b[1;36m", "LATENCY / CYCLE BUDGET", "\x1b[1;36m");
-    println!("\x1b[1;32m├{}┼{}┼{}┤\x1b[0m", "─".repeat(42), "─".repeat(23), "─".repeat(28));
+    println!("\x1b[1;32m{}{}{}\x1b[0m", "".repeat(42), "".repeat(23), "".repeat(28));
     print_row("Phase 1: QUIC Core Engine (RFC 9000)", "\x1b[0m", &format!("{:.2} Mpps", quic_mpps), "\x1b[1;37m", "Zero-Copy UMEM Frames", "\x1b[1;32m");
     print_row("Phase 1: QPACK Encoder (RFC 9204)", "\x1b[0m", &format!("{:.2} Mops/s", qpack_enc), "\x1b[1;37m", "Static/Dynamic Table Mux", "\x1b[1;32m");
     print_row("Phase 1: QPACK Decoder (RFC 9204)", "\x1b[0m", &format!("{:.2} Mops/s", qpack_dec), "\x1b[1;37m", "Zero-Alloc Stream Parse", "\x1b[1;32m");
@@ -291,7 +291,7 @@ fn main() {
     print_row("Phase 4: Software IP/TCP Checksum Calc", "\x1b[0m", &format!("{:.2} cycles", sw_csum_c), "\x1b[1;37m", "Full Header Sweeps", "\x1b[0m");
     print_row("Phase 4: NIC Hardware Offload Hints", "\x1b[0m", &format!("{:.2} cycles", hw_offload_c), "\x1b[1;32m", &format!("{:.2} cycles saved/pkt", sw_csum_c - hw_offload_c), "\x1b[1;32m");
     print_row("Phase 5: Thread-per-Core Async Executor", "\x1b[0m", &format!("{:.2} Mops/s", txc_mops), "\x1b[1;32m", &format!("{:.2} ns / task dispatch", txc_latency_ns), "\x1b[1;32m");
-    println!("\x1b[1;32m└{}┴{}┴{}┘\x1b[0m", "─".repeat(42), "─".repeat(23), "─".repeat(28));
+    println!("\x1b[1;32m{}{}{}\x1b[0m", "".repeat(42), "".repeat(23), "".repeat(28));
     println!("\n\x1b[1;32m[+] All Tier-1 performance criteria verified and exceeded across CPU, NIC & NVMe subsystems.\x1b[0m");
-    println!("\x1b[1;36m{}\x1b[0m", "═".repeat(banner_width));
+    println!("\x1b[1;36m{}\x1b[0m", "".repeat(banner_width));
 }

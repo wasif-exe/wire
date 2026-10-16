@@ -150,13 +150,13 @@ fn print_row(module: &str, btype: &str, rate: &str, latency: &str, status: bool)
     let sp = if status { "[PASS]" } else { "[FAIL]" };
     let sc = if status { "\x1b[1;32m[PASS]\x1b[0m" } else { "\x1b[1;31m[FAIL]\x1b[0m" };
     let sp = format!("{:^8}", sp).replace(if status { "[PASS]" } else { "[FAIL]" }, sc);
-    println!("│ {} │ {} │ {} │ {} │ {} │", c0, c1, c2, c3, sp);
+    println!(" {}  {}  {}  {}  {} ", c0, c1, c2, c3, sp);
 }
 
 fn main() {
     let w = 113;
-    let sep = "═".repeat(w);
-    let t = "─";
+    let sep = "".repeat(w);
+    let t = "";
 
     println!("\x1b[1;36m{}\x1b[0m", sep);
     println!("\x1b[1;37m{:^113}\x1b[0m", "WIRE v9 \u{2014} ZERO-ALLOCATION MATCHING ENGINE & MEMORY KERNEL");
@@ -176,9 +176,9 @@ fn main() {
     let h3 = format!("{:>22}", "LATENCY");
     let h4 = format!("{:^8}", "STATUS");
 
-    println!("┌{}┬{}┬{}┬{}┬{}┐", t.repeat(44), t.repeat(17), t.repeat(22), t.repeat(24), t.repeat(10));
-    println!("│ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │ \x1b[1;36m{}\x1b[0m │", h0, h1, h2, h3, h4);
-    println!("├{}┼{}┼{}┼{}┼{}┤", t.repeat(44), t.repeat(17), t.repeat(22), t.repeat(24), t.repeat(10));
+    println!("{}{}{}{}{}", t.repeat(44), t.repeat(17), t.repeat(22), t.repeat(24), t.repeat(10));
+    println!(" \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m  \x1b[1;36m{}\x1b[0m ", h0, h1, h2, h3, h4);
+    println!("{}{}{}{}{}", t.repeat(44), t.repeat(17), t.repeat(22), t.repeat(24), t.repeat(10));
 
     let ml = format!("{:.2} cyc ({:.1} ns)", mc, mns);
     print_row("Matching Engine (wire-matching)", "MATCHING", &format!("{:.1} Mops/s", mm), &ml, mp);
@@ -187,7 +187,7 @@ fn main() {
     print_row("SIMD User Cancel x8 (wire-exchange)", "SIMD", &format!("{:.0} Mslots/s", um), &format!("{:.2} cyc/8 orders", uc), up);
     print_row("SIMD Price Sweep x8 (wire-exchange)", "SIMD", &format!("{:.0} Mslots/s", pm), &format!("{:.2} cyc/8 orders", pc), pp);
 
-    println!("└{}┴{}┴{}┴{}┴{}┘", t.repeat(44), t.repeat(17), t.repeat(22), t.repeat(24), t.repeat(10));
+    println!("{}{}{}{}{}", t.repeat(44), t.repeat(17), t.repeat(22), t.repeat(24), t.repeat(10));
 
     let all = mp && sp && qp && up && pp;
     if all {
