@@ -1,6 +1,13 @@
-/target/
-**/*.rs.bk
+/target
+**/target/
 *.o
 *.so
-*.out
+*.a
+*.d
 .DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.log
