@@ -28,6 +28,10 @@ Wire v9 extends the Wire v1–v8 networking, market data, and hardware dataplane
 
 ## Verified Subsystem Metrics (`v9_benchmark`)
 
+<div align="center">
+  <img src="wirev9benchmark.png" alt="Wire v9 Terminal Benchmark Dashboard">
+</div>
+
 ### Hardware & Test Disclosures
 
 * **CPU Host:** x86_64 (AVX2 enabled), pinned to a single core via `taskset -c 2`
