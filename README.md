@@ -13,7 +13,7 @@ Wire v9 extends the Wire v1–v8 networking, market data, and hardware dataplane
 ## Architectural Evolution (v1 to v9)
 
 | Version | Target Scope | Core Technical Achievement |
-| --- | --- | --- |
+| :--- | :--- | :--- |
 | **v1** | Correct 3-Way Handshake | Zero-I/O TCP FSM over Linux TAP, 1MB SHA-256 verified transfers, 300/300 chaos simulation seeds. |
 | **v2** | Full L2 to L7 Stack | PAWS-safe timestamps, Window Scaling, SACK negotiation, UDP, DNS stub resolver, HTTP client (`wire-curl`). |
 | **v3** | Kernel Bypass & Transport | AF_XDP zero-copy rings, RFC 6675 SACK Scoreboard, Google BBR congestion control, async `io_uring` reactor, TLS 1.3. |
@@ -45,7 +45,7 @@ Wire v9 extends the Wire v1–v8 networking, market data, and hardware dataplane
 ### Subsystem Performance Results
 
 | Subsystem | Type | Throughput | Latency | Status | What Is Actually Measured |
-| --- | --- | --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | **Matching Engine** (`wire-matching`) | MATCHING | 267.8 Mops/s | 11.20 cyc (3.7 ns) | PASS | Core match loop on a flat-array order book. Single fill per match. No protocol parsing, no persistence. |
 | **HugePage Slab Allocator** (`wire-alloc`) | MEMORY | 646.4 Mops/s | 1.55 ns/alloc+free | PASS | Thread-local alloc+free of 64-byte blocks from a pre-allocated HugePage slab. No cross-thread free, no fragmentation handling. |
 | **Lock-Free MPMC Queue** (`wire-mpmc`) | MICRO | 153.3 Mops/s | 6.52 ns/push+pop | PASS | Single-thread push+pop on a Vyukov-style bounded ring. No multi-thread contention in this measurement. |
@@ -65,7 +65,7 @@ Wire v9 extends the Wire v1–v8 networking, market data, and hardware dataplane
 > **Important caveat:** The numbers below compare our microbenchmark hot-path operations against production systems that include full protocol stacks, journaling, risk management, and fault tolerance. **These are not equivalent measurements.** The purpose is to show that the core algorithms are architecturally sound, not to claim parity with production exchanges.
 
 | System | Reported Latency | Scope |
-| --- | --- | --- |
+| :--- | :--- | :--- |
 | **Wire v9 Matching** (this project) | ~11 cycles (~3.7 ns) | Core match loop only, flat array, no protocol, no persistence |
 | **LMAX Disruptor** (public estimates) | ~50–200 cycles | Full matching engine with journaling and replication |
 | **NASDAQ INET** (public estimates) | ~15,000 cycles (~5 µs) | Full exchange stack including risk, routing, and market data |
@@ -110,46 +110,45 @@ Wire v9 extends the Wire v1–v8 networking, market data, and hardware dataplane
 
 ```text
 .
- Cargo.toml                              # Workspace manifest (24 members)
- wire-core                               # Base Network Engine and Probe Metrics
- wire-mcast                              # CME MDP 3.0 SBE Decoder & Feed Arbitrator
- wire-vfio                               # Bare-Metal VFIO PCIe BAR0 User-Space Driver
- wire-onload                             # LD_PRELOAD POSIX Interception Shim
- wire-sor                                # SIMD Multi-Venue Smart Order Router
- wire-ptp-servo                          # PTP Hardware Clock PI Servo Controller
- wire-disruptor                          # LMAX Disruptor HugePage Ring Buffer
- wire-exchange                           # ITCH 5.0, FIX 4.4, LOB Engine, SIMD Cancel
-    src
-        lib.rs                          # Re-exports + simd_cancel module
-        order.rs                        # Order types
-        lob.rs                          # Limit Order Book
-        simd_cancel.rs                  # [v9] AVX2 Batch Cancel Kernels
- wire-matching                           # [v9] Price-Time Priority Matching Engine
-    src
-        lib.rs                          # MatchingEngine, OrderSlot, PriceLevel
- wire-alloc                              # [v9] Thread-Local HugePage Slab Allocator
-    src
-        lib.rs                          # HugeSlabAllocator, FixedSlab, SlabBox
- wire-mpmc                               # [v9] Lock-Free MPMC Queue
-    src
-        lib.rs                          # MpmcQueue (Vyukov bounded ring)
- wire-dma                                # Intel DDIO & NAPI Busy-Polling
- wire-risk                               # Pre-Trade eBPF XDP Risk Filter
- wire-ptp                                # IEEE 1588 PTP Hardware Clock Reader
- wire-quic                               # Zero-Copy QUIC & HTTP/3 Engine
- wire-simd                               # Universal Network Header SIMD Parser
- wire-runtime                            # Lock-Free Thread-per-Core Async Runtime
- wire-store                              # io_uring SQPOLL Direct I/O WAL Engine
- wire-xdp                                # AF_XDP Zero-Copy Kernel Bypass Engine
- wire-pacer                              # Hierarchical Atomic Timing Wheel
- wire-sim                                # Deterministic Chaos Simulator (300 seeds)
- wire-echo                               # Benchmark Suite and Applications
-     src
-         bin
-             v9_benchmark.rs             # [v9] Matching Engine & Memory Kernel Dashboard
-             v8_benchmark.rs             # Wire v8 Commercial HFT Dashboard
-             v7_benchmark.rs             # Wire v7 Sub-Microsecond Benchmark
-
+├── Cargo.toml                              # Workspace manifest (24 members)
+├── wire-core                               # Base Network Engine and Probe Metrics
+├── wire-mcast                              # CME MDP 3.0 SBE Decoder & Feed Arbitrator
+├── wire-vfio                               # Bare-Metal VFIO PCIe BAR0 User-Space Driver
+├── wire-onload                             # LD_PRELOAD POSIX Interception Shim
+├── wire-sor                                # SIMD Multi-Venue Smart Order Router
+├── wire-ptp-servo                          # PTP Hardware Clock PI Servo Controller
+├── wire-disruptor                          # LMAX Disruptor HugePage Ring Buffer
+├── wire-exchange                           # ITCH 5.0, FIX 4.4, LOB Engine, SIMD Cancel
+│   └── src
+│       ├── lib.rs                          # Re-exports + simd_cancel module
+│       ├── order.rs                        # Order types
+│       ├── lob.rs                          # Limit Order Book
+│       └── simd_cancel.rs                  # [v9] AVX2 Batch Cancel Kernels
+├── wire-matching                           # [v9] Price-Time Priority Matching Engine
+│   └── src
+│       └── lib.rs                          # MatchingEngine, OrderSlot, PriceLevel
+├── wire-alloc                              # [v9] Thread-Local HugePage Slab Allocator
+│   └── src
+│       └── lib.rs                          # HugeSlabAllocator, FixedSlab, SlabBox
+├── wire-mpmc                               # [v9] Lock-Free MPMC Queue
+│   └── src
+│       └── lib.rs                          # MpmcQueue (Vyukov bounded ring)
+├── wire-dma                                # Intel DDIO & NAPI Busy-Polling
+├── wire-risk                               # Pre-Trade eBPF XDP Risk Filter
+├── wire-ptp                                # IEEE 1588 PTP Hardware Clock Reader
+├── wire-quic                               # Zero-Copy QUIC & HTTP/3 Engine
+├── wire-simd                               # Universal Network Header SIMD Parser
+├── wire-runtime                            # Lock-Free Thread-per-Core Async Runtime
+├── wire-store                              # io_uring SQPOLL Direct I/O WAL Engine
+├── wire-xdp                                # AF_XDP Zero-Copy Kernel Bypass Engine
+├── wire-pacer                              # Hierarchical Atomic Timing Wheel
+├── wire-sim                                # Deterministic Chaos Simulator (300 seeds)
+└── wire-echo                               # Benchmark Suite and Applications
+    └── src
+        └── bin
+            ├── v9_benchmark.rs             # [v9] Matching Engine & Memory Kernel Dashboard
+            ├── v8_benchmark.rs             # Wire v8 Commercial HFT Dashboard
+            └── v7_benchmark.rs             # Wire v7 Sub-Microsecond Benchmark
 ```
 
 ---
@@ -171,14 +170,12 @@ Wire v9 adds 3 new crates and 1 new module. All 21 existing v1–v8 crates are u
 
 ```bash
 cargo build --all --release
-
 ```
 
 ### Run Full Test Suite
 
 ```bash
 cargo test --all --release
-
 ```
 
 ### Execute Wire v9 Benchmark Dashboard
@@ -186,7 +183,6 @@ cargo test --all --release
 ```bash
 RUSTFLAGS="-C target-cpu=native" cargo build --release --bin v9_benchmark
 taskset -c 2 target/release/v9_benchmark
-
 ```
 
 ### Execute Wire v8 Benchmark Dashboard
@@ -194,14 +190,12 @@ taskset -c 2 target/release/v9_benchmark
 ```bash
 cargo build --release --bin v8_benchmark
 sudo taskset -c 0 chrt -f 99 target/release/v8_benchmark
-
 ```
 
 ### Execute Wire v7 Sub-Microsecond Benchmark
 
 ```bash
 taskset -c 0 target/release/v7_benchmark
-
 ```
 
 ---
